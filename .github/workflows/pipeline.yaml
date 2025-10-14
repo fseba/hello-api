@@ -38,6 +38,7 @@ jobs:
         with:
           name: reports
           path: reports
+
   build:
     name: Build App
     runs-on: ubuntu-latest
@@ -64,3 +65,37 @@ jobs:
         with:
           name: api
           path: artifacts
+
+  deliver:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: |
+            Still in experimentation phase
+          draft: true
+          prerelease: true
+      - name: Upload Release Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: api
+          asset_name: api
+          asset_content_type: application/octet-stream
+
