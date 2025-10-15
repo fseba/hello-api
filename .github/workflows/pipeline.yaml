@@ -112,6 +112,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
       - name: Deploy to Function
         id: deploy
         uses: google-github-actions/deploy-cloud-functions@main
@@ -120,7 +126,7 @@ jobs:
           name: translate
           entry_point: Translate
           runtime: go121
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          # credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - id: test
         run: curl "${{ steps.deploy.outputs.url }}/hello"
