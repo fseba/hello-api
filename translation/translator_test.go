@@ -33,6 +33,12 @@ func TestTranslate(t *testing.T) {
 			want:     "hei",
 		},
 		{
+			name:     "hello in French",
+			word:     "hello",
+			language: "french",
+			want:     "bonjour",
+		},
+		{
 			name:     "unknown language returns empty string",
 			word:     "unknown",
 			language: "unknown",
