@@ -125,7 +125,7 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           name: translate
           entry_point: Translate
-          runtime: go121
+          runtime: go125
 
       - id: test
         run: curl "${{ steps.deploy.outputs.url }}/hello"
