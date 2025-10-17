@@ -130,3 +130,23 @@ jobs:
       - id: test
         run: curl "${{ steps.deploy.outputs.url }}/hello"
 
+
+  deploy-app:
+    name: Deploy PaaS
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to App Engine
+        id: deploy
+        uses: 'google-github-actions/deploy-app-engine@main'
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          deliverables: './app.yaml'
+          credentials: '${{ secrets.GCP_CREDENTIALS }}'
+      - id: test
+        run: curl "https://${{ steps.deploy.outputs.url }}/translate/health"
