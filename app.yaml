@@ -13,3 +13,8 @@ readiness_check:
   failure_threshold: 2
   success_threshold: 2
   app_start_timeout_sec: 300
+automatic_scaling:
+  min_pending_latency: 30ms
+  max_pending_latency: 60ms
+  min_instances: 1
+  max_instances: 2
