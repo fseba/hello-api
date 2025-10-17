@@ -154,4 +154,4 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           deliverables: './app.yaml'
       - id: test
-        run: curl "https://${{ steps.deploy.outputs.url }}/translate/health"
+        run: curl "${{ steps.deploy.outputs.url }}/health"
