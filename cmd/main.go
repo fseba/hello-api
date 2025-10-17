@@ -1,18 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/fseba/hello-api/handlers"
 	"github.com/fseba/hello-api/handlers/rest"
 )
 
 func main() {
-	addr := ":8080"
+	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	if addr == ":" {
+		addr = ":8080"
+	}
 
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/hello", rest.TranslateHandler)
+	mux.HandleFunc("/health", handlers.HealthCheck)
 
 	log.Printf("listening on %s\n", addr)
 
