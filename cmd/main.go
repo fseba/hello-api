@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/fseba/hello-api/handlers"
 	"github.com/fseba/hello-api/handlers/rest"
@@ -21,7 +22,15 @@ func main() {
 	mux.HandleFunc("/hello", rest.TranslateHandler)
 	mux.HandleFunc("/health", handlers.HealthCheck)
 
+	server := &http.Server{
+		Addr:         addr,
+		Handler:      mux,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
 	log.Printf("listening on %s\n", addr)
 
-	log.Fatal(http.ListenAndServe(addr, mux))
+	log.Fatal(server.ListenAndServe())
 }

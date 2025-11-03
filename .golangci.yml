@@ -1,0 +1,11 @@
+version: "2"
+linters:
+  enable:
+    - gosec
+
+output:
+  formats:
+    text:
+      print-issued-lines: false
+      print-linter-name: true
+      colors: true
