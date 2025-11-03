@@ -1,3 +1,4 @@
+// Package translation provides a function to translate the word "hello" into different languages.
 package translation
 
 import "strings"

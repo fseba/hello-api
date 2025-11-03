@@ -1,3 +1,4 @@
+// Package faas implements the function-as-a-service entry points.
 package faas
 
 import (
