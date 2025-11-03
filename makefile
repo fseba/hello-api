@@ -29,3 +29,8 @@ init-go:
 	echo 'export PATH=$$PATH:/urs/local/go/bin' >> $${HOME}/.zshrc
 	echo 'export PATH=$$PATH:$${HOME}/go/bin' >> $${HOME}/.zshrc
 
+install-lint:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@2.6.0
+
+static-check:
+	golangci-lint run ./...
