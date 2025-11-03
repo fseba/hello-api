@@ -1,3 +1,4 @@
+// Package rest handles HTTP requests for translations.
 package rest
 
 import (
