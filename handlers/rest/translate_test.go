@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/fseba/hello-api/handlers/rest"
+	"github.com/fseba/hello-api/translation"
 )
 
 func TestTranslateAPI(t *testing.T) {
@@ -45,7 +46,8 @@ func TestTranslateAPI(t *testing.T) {
 			rr := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", tt.Endpoint, nil)
 
-			handler := http.HandlerFunc(rest.TranslateHandler)
+			underTest := rest.NewTranslateHandler(translation.NewStaticService())
+			handler := http.HandlerFunc(underTest.TranslateHandler)
 			handler.ServeHTTP(rr, req)
 
 			if rr.Code != tt.StatusCode {

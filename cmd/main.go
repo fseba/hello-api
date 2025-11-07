@@ -9,6 +9,7 @@ import (
 
 	"github.com/fseba/hello-api/handlers"
 	"github.com/fseba/hello-api/handlers/rest"
+	"github.com/fseba/hello-api/translation"
 )
 
 func main() {
@@ -19,7 +20,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/hello", rest.TranslateHandler)
+	translationService := translation.NewStaticService()
+	translateHandler := rest.NewTranslateHandler(translationService)
+	mux.HandleFunc("/hello", translateHandler.TranslateHandler)
 	mux.HandleFunc("/health", handlers.HealthCheck)
 
 	server := &http.Server{

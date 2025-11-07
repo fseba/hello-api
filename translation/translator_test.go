@@ -69,9 +69,10 @@ func TestTranslate(t *testing.T) {
 			want:     "hallo",
 		},
 	}
+	underTest := translation.NewStaticService()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := translation.Translate(tt.word, tt.language)
+			got := underTest.Translate(tt.word, tt.language)
 			if got != tt.want {
 				t.Errorf("Translate() = %v, want %v", got, tt.want)
 			}
