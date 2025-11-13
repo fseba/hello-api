@@ -7,8 +7,16 @@ import (
 	"testing"
 
 	"github.com/fseba/hello-api/handlers/rest"
-	"github.com/fseba/hello-api/translation"
 )
+
+type stubbedService struct{}
+
+func (s *stubbedService) Translate(word, language string) string {
+	if word == "foo" {
+		return "bar"
+	}
+	return ""
+}
 
 func TestTranslateAPI(t *testing.T) {
 	tests := []struct {
@@ -19,22 +27,22 @@ func TestTranslateAPI(t *testing.T) {
 		expectedTrans string
 	}{
 		{
-			name:          "default hello translation",
-			Endpoint:      "/hello",
+			name:          "default translation",
+			Endpoint:      "/foo",
 			StatusCode:    http.StatusOK,
 			expectedLang:  "english",
-			expectedTrans: "hello",
+			expectedTrans: "bar",
 		},
 		{
 			name:          "hello to german",
-			Endpoint:      "/hello?language=german",
+			Endpoint:      "/foo?language=german",
 			StatusCode:    http.StatusOK,
 			expectedLang:  "german",
-			expectedTrans: "hallo",
+			expectedTrans: "bar",
 		},
 		{
 			name:          "missing language returns 404",
-			Endpoint:      "/hello?language=unknown",
+			Endpoint:      "/baz?language=unknown",
 			StatusCode:    http.StatusNotFound,
 			expectedLang:  "",
 			expectedTrans: "",
@@ -46,7 +54,7 @@ func TestTranslateAPI(t *testing.T) {
 			rr := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", tt.Endpoint, nil)
 
-			underTest := rest.NewTranslateHandler(translation.NewStaticService())
+			underTest := rest.NewTranslateHandler(&stubbedService{})
 			handler := http.HandlerFunc(underTest.TranslateHandler)
 			handler.ServeHTTP(rr, req)
 
