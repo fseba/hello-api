@@ -38,7 +38,9 @@ func (suite *HelloClientSuite) SetupSuite() {
 	suite.mockServerService = new(MockService)
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		b, _ := io.ReadAll(r.Body)
-		defer r.Body.Close()
+		defer func() {
+			_ = r.Body.Close()
+		}()
 
 		var m map[string]any
 		_ = json.Unmarshal(b, &m)

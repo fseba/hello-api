@@ -43,7 +43,10 @@ func (c *APIClient) Translate(word, language string) (string, error) {
 		return "", errors.New("error in api")
 	}
 	b, _ = io.ReadAll(resp.Body)
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
+
 	var m map[string]any
 	if err := json.Unmarshal(b, &m); err != nil {
 		return "", errors.New("unable to decode api response")
