@@ -139,6 +139,34 @@ jobs:
           asset_name: api
           asset_content_type: application/octet-stream
 
+  containerize-buildpack:
+    name: Build container
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: test
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build min
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:min .
+      - name: Build dev
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev --target=dev .
+      - name: Log in to the GHCR
+        uses: docker/login-action@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push min to GHCR
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:min
+      - name: Push dev to GHCR
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
+
   # deploy-function:
   #   name: Deploy Faas
   #   runs-on: ubuntu-latest
