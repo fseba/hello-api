@@ -54,7 +54,7 @@ func TestTranslateAPI(t *testing.T) {
 			rr := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", tt.Endpoint, nil)
 
-			underTest := rest.NewTranslateHandler(&stubbedService{})
+			underTest := rest.NewTranslateHandler(&stubbedService{}, "english")
 			handler := http.HandlerFunc(underTest.TranslateHandler)
 			handler.ServeHTTP(rr, req)
 

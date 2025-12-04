@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-const defaultLanguage = "english"
-
 type Translator interface {
 	Translate(word, language string) string
 }
@@ -20,12 +18,13 @@ type Resp struct {
 
 // TranslateHandler will translate calls for caller.
 type TranslateHandler struct {
-	service Translator
+	service         Translator
+	defaultLanguage string
 }
 
 // NewTranslateHandler will create a new instance of the handler using a translator service.
-func NewTranslateHandler(service Translator) *TranslateHandler {
-	return &TranslateHandler{service: service}
+func NewTranslateHandler(service Translator, defaultLanguage string) *TranslateHandler {
+	return &TranslateHandler{service: service, defaultLanguage: defaultLanguage}
 }
 
 // TranslateHandler will take a given request with a path value of the
@@ -36,7 +35,7 @@ func (t *TranslateHandler) TranslateHandler(w http.ResponseWriter, r *http.Reque
 
 	language := r.URL.Query().Get("language")
 	if language == "" {
-		language = defaultLanguage
+		language = t.defaultLanguage
 	}
 	word := strings.ReplaceAll(r.URL.Path, "/", "")
 	translation := t.service.Translate(word, language)
