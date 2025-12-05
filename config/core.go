@@ -1,3 +1,4 @@
+// Package config provides configuration loading and parsing capabilities.
 package config
 
 import (
@@ -7,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -23,7 +25,7 @@ var defaultConfiguration = Configuration{
 	DefaultLanguage: "english",
 }
 
-// LoadFromEnv will load configuration solely from the environment
+// LoadFromEnv will load configuration solely from the environment.
 func (c *Configuration) LoadFromEnv() {
 	if lang := os.Getenv("DEFAULT_LANGUAGE"); lang != "" {
 		c.DefaultLanguage = lang
@@ -33,7 +35,7 @@ func (c *Configuration) LoadFromEnv() {
 	}
 }
 
-// ParsePort will check to see if the port is in the proper format and a number
+// ParsePort will check to see if the port is in the proper format and a number.
 func (c *Configuration) ParsePort() {
 	if c.Port[0] != ':' {
 		c.Port = ":" + c.Port
@@ -44,10 +46,10 @@ func (c *Configuration) ParsePort() {
 	}
 }
 
-// LoadFromJson will read a JSON file and update the configuration based on the file
-func (c *Configuration) LoadFromJson(filePath string) error {
+// LoadFromJSON will read a JSON file and update the configuration based on the file.
+func (c *Configuration) LoadFromJSON(filePath string) error {
 	log.Printf("loading configuration from file: %s\n", filePath)
-	b, err := os.ReadFile(filePath)
+	b, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		log.Printf("error load file: %v\n", err)
 		return errors.New("unable to load configuration file")
@@ -68,7 +70,7 @@ func (c *Configuration) LoadFromJson(filePath string) error {
 	return nil
 }
 
-// LoadConfiguration will provide cycle through flags, file, and finally env variables to load configuration
+// LoadConfiguration will provide cycle through flags, file, and finally env variables to load configuration.
 func LoadConfiguration() Configuration {
 	cfgfileFlag := flag.String("config_file", "", "load configuration from file")
 	portFlag := flag.String("port", "", "port to run the server on")
@@ -77,7 +79,7 @@ func LoadConfiguration() Configuration {
 	cfg := defaultConfiguration
 
 	if cfgfileFlag != nil && *cfgfileFlag != "" {
-		if err := cfg.LoadFromJson(*cfgfileFlag); err != nil {
+		if err := cfg.LoadFromJSON(*cfgfileFlag); err != nil {
 			log.Printf("error loading configuration from file: %v\n", err)
 			log.Println("using default values")
 		}
